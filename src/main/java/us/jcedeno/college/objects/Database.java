@@ -37,12 +37,18 @@ public class Database {
         return false;
     }
 
-    //POST
+    // POST
     public void insertPerson(Person person) {
-        var query = "INSERT INTO PEOPLE (FIRST, LAST, AGE, SSN, CC) VALUES " + person.toValues();
+        var query = "INSERT INTO PEOPLE (first, last, age, ssn, cc) VALUES " + person.toValues();
         executeQuery(query);
     }
-    //GET
+    //DELETE
+    public boolean deletePerson(Long ssn) {
+        var query = "DELETE FROM PEOPLE WHERE ssn='" + ssn + "'";
+        return executeQuery(query);
+    }
+
+    // GET
     public Person selectPerson(String id) {
         try {
             var rs = connection.createStatement().executeQuery("SELECT * FROM PEOPLE WHERE id='" + id + "'");

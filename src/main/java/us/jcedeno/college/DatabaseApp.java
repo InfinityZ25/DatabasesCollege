@@ -24,5 +24,9 @@ public class DatabaseApp {
         var people = app.getDatabase().findAllPeople();
         System.out.println("People in database: ");
         people.forEach(System.out::println);
+        // Delete people
+        app.getDatabase().deletePerson(123456789L);
+        System.out.println("After delete: ");
+        app.getDatabase().findAllPeople().forEach(System.out::println);
     }
 }
