@@ -5,17 +5,24 @@ package us.jcedeno.college;
 
 import lombok.Getter;
 import us.jcedeno.college.objects.Database;
+import us.jcedeno.college.objects.Person;
 
 public class DatabaseApp {
     private @Getter Database database = new Database("database.db");
 
-    public String getGreeting() {
-        return "Hello world.";
-    }
     public static void main(String[] args) throws Exception {
         var app = new DatabaseApp();
-        var query = "CREATE TABLE PEOPLE (ID INT PRIMARY KEY NOT NULL, FIRSTNAME TEXT NOT NULL, LASTNAME TEXT NOT NULL, AGE INT NOT NULL, SSN INTEGER NOT NULL, CC INTEGER NOT NULL )";
-        var result = app.getDatabase().executeQuery(query);
-        System.out.println("Result of promise " + result);
+        // Add person to db
+        var person = Person.of("Juan", "Cedeno", 19, 123456789, 4000400040001234L);
+        app.getDatabase().insertPerson(person);
+        // Retrive person from database
+        var personBack = app.getDatabase().selectPerson("1");
+        System.out.println(personBack.toString());
+        // Add another person to DB to show later
+        app.getDatabase().insertPerson(Person.of("John", "Wick", 69, 420, 4000200060009000L));
+        // List all people in db and print them
+        var people = app.getDatabase().findAllPeople();
+        System.out.println("People in database: ");
+        people.forEach(System.out::println);
     }
 }

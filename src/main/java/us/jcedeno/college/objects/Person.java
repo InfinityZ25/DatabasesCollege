@@ -12,4 +12,8 @@ public class Person {
     long ssn;
     long creditCard;
 
+    public String toValues() {
+        return String.format("('%s', '%s', '%d', '%d', '%d')", firstName, lastName, age, ssn, creditCard);
+    }
+
 }
