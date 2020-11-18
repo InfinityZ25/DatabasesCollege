@@ -4,11 +4,17 @@
 package databases;
 
 import org.junit.Test;
+
+import us.jcedeno.college.DatabaseApp;
+
 import static org.junit.Assert.*;
 
 public class AppTest {
-    @Test public void testAppHasAGreeting() {
-        App classUnderTest = new App();
-        assertNotNull("app should have a greeting", classUnderTest.getGreeting());
+    @Test
+    public void testAppHasAGreeting() {
+        // CREATE BETTER TESTS
+        DatabaseApp classUnderTest = new DatabaseApp();
+        assertNotNull("DB CANNOT BE NULL", classUnderTest.getDatabase());
+
     }
 }
