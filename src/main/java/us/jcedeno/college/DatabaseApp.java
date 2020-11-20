@@ -3,30 +3,66 @@
  */
 package us.jcedeno.college;
 
+import java.util.Optional;
+
 import lombok.Getter;
-import us.jcedeno.college.objects.Database;
-import us.jcedeno.college.objects.Person;
+import us.jcedeno.college.objects.HighScoreDatabase;
+import us.jcedeno.college.objects.User;
 
 public class DatabaseApp {
-    private @Getter Database database = new Database("database.db");
+    private @Getter HighScoreDatabase database = new HighScoreDatabase("scores.db");
+
+    // Shortcut function
+    public boolean insertUser(User user) {
+        return database.insertUser(user);
+    }
+
+    public boolean updateUser(User user, int score) {
+        user.setScore(score);
+        return database.insertUser(user);
+    }
+
+    public Optional<Integer> getScore(String username) {
+        var user = database.selectUser(username);
+        return Optional.ofNullable(user.isPresent() ? user.get().getScore() : null);
+    }
+
+    public void clearDatabase() throws Exception {
+        database.findAllPeople().forEach(users -> {
+            database.deleteUser(users.getUsername());
+        });
+
+    }
 
     public static void main(String[] args) throws Exception {
+        // Create the database app
         var app = new DatabaseApp();
-        // Add person to db
-        var person = Person.of("Juan", "Cedeno", 19, 123456789, 4000400040001234L);
-        app.getDatabase().insertPerson(person);
-        // Retrive person from database
-        var personBack = app.getDatabase().selectPerson("1");
-        System.out.println(personBack.toString());
-        // Add another person to DB to show later
-        app.getDatabase().insertPerson(Person.of("John", "Wick", 69, 420, 4000200060009000L));
-        // List all people in db and print them
-        var people = app.getDatabase().findAllPeople();
-        System.out.println("People in database: ");
-        people.forEach(System.out::println);
-        // Delete people
-        app.getDatabase().deletePerson(123456789L);
-        System.out.println("After delete: ");
+        // Insert user onyl if not present
+        if (app.getScore("jcedeno").isEmpty()) {
+            app.insertUser(User.of("jcedeno", 120));
+        }
+        app.insertUser(User.of("aleiv", 169));
+
+        // Get score for an user not in the database results in score of -1
+        var scorePromise = app.getScore("mike");
+        if (scorePromise.isPresent()) {
+            System.out.println("Score for mike is " + scorePromise.get());
+        } else {
+            System.out.println("mike is not in the database");
+        }
+        // Print DB to show who is in it before deleting it
+        System.out.println("Database:");
         app.getDatabase().findAllPeople().forEach(System.out::println);
+        // Wipe the DB
+        app.clearDatabase();
+        // Print DB again
+        var users = app.getDatabase().findAllPeople();
+        if(users.isEmpty()){
+            System.out.println("Database is empty");            
+        }else{
+            System.out.println("Database:");
+            app.getDatabase().findAllPeople().forEach(System.out::println);
+        }
+
     }
 }
